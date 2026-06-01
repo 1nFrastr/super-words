@@ -10,7 +10,7 @@
 ![本地词库练习](.assets/local-practice.gif)
 
 ### AI场景练习模式
-🎬 **演示视频**
+🎬 **演示视频（记得取消静音，体验会更好）**
 
 https://github.com/user-attachments/assets/6be9eb10-e39e-40d8-be63-5cb1566b77df
 
