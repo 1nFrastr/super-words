@@ -1,6 +1,5 @@
 "use client";
 
-import BrandTitle from "@/components/BrandTitle";
 import Game from "@/components/Game";
 import {
   clearPlaySession,
@@ -33,7 +32,7 @@ export default function PlayPage() {
 
   if (!ready || !session) {
     return (
-      <main className="flex min-h-screen items-center justify-center">
+      <main className="flex min-h-screen items-center justify-center pt-24">
         <p className="text-sm text-gray-500">加载练习中...</p>
       </main>
     );
@@ -41,16 +40,11 @@ export default function PlayPage() {
 
   return (
     <main className="relative min-h-screen">
-      <div className="pointer-events-none fixed inset-x-0 top-6 z-30 flex flex-col items-center px-4">
-        <div className="pointer-events-auto">
-          <BrandTitle href="/" onClick={clearPlaySession} as="div" />
-        </div>
-        {session.topic && (
-          <p className="mt-2 text-center text-sm text-gray-500">
-            主题：{session.topic}
-          </p>
-        )}
-      </div>
+      {session.topic && (
+        <p className="pointer-events-none fixed inset-x-0 top-20 z-30 text-center text-sm text-gray-500">
+          主题：{session.topic}
+        </p>
+      )}
       <Game
         words={session.words}
         onExit={handleExit}
