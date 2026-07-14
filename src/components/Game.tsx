@@ -170,13 +170,6 @@ export default function Game({ words: initialWords, onExit, onWordsChange }: Gam
         onWordClick={handleWordClick}
       />
 
-      <button
-        onClick={onExit}
-        className="fixed right-4 top-16 z-30 rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20 sm:top-24"
-      >
-        切换词库
-      </button>
-
       {/* 单词输出区：相对视口水平垂直居中 */}
       <div className="flex min-h-screen w-full items-center justify-center px-4">
         <div className="mx-auto w-full max-w-2xl">
