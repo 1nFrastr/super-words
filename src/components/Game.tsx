@@ -172,7 +172,7 @@ export default function Game({ words: initialWords, onExit, onWordsChange }: Gam
 
       <button
         onClick={onExit}
-        className="fixed right-4 top-4 z-30 rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20"
+        className="fixed right-4 top-16 z-30 rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20 sm:top-24"
       >
         切换词库
       </button>

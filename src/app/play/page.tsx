@@ -41,7 +41,7 @@ export default function PlayPage() {
   return (
     <main className="relative min-h-screen">
       {session.topic && (
-        <p className="pointer-events-none fixed inset-x-0 top-20 z-30 text-center text-sm text-gray-500">
+        <p className="pointer-events-none fixed inset-x-0 top-[7.5rem] z-30 text-center text-sm text-gray-500 sm:top-[9.5rem]">
           主题：{session.topic}
         </p>
       )}

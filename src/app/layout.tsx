@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`}
       >
-        <header className="pointer-events-none fixed inset-x-0 top-0 z-30 flex h-24 items-center justify-center px-4">
+        <header className="pointer-events-none fixed inset-x-0 top-0 z-30 flex justify-center px-4 pt-16 sm:pt-24">
           <div className="pointer-events-auto">
             <BrandTitle />
           </div>
