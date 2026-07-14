@@ -163,61 +163,58 @@ export default function Game({ words: initialWords, onExit, onWordsChange }: Gam
   }
 
   return (
-    <div className="relative min-h-screen">
+    <>
       <WordList
         words={selectedWords}
         currentIndex={wordIndex}
         onWordClick={handleWordClick}
       />
 
-      <div className="main-content w-full">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-4 flex items-center justify-end">
-            <button
-              onClick={onExit}
-              className="rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20"
-            >
-              切换词库
-            </button>
+      <button
+        onClick={onExit}
+        className="fixed right-4 top-4 z-30 rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20"
+      >
+        切换词库
+      </button>
+
+      {/* 单词输出区：相对视口水平垂直居中 */}
+      <div className="flex min-h-screen w-full items-center justify-center px-4">
+        <div className="mx-auto w-full max-w-2xl">
+          <div className="mb-2 text-center text-sm text-gray-500">
+            进度: {wordIndex + 1} / {selectedWords.length}
+          </div>
+          <div className="mb-8 text-center text-2xl text-gray-300">
+            {currentWord.chinese}
           </div>
 
-          <div className="mx-auto max-w-2xl">
-            <div className="mb-2 text-center text-sm text-gray-500">
-              进度: {wordIndex + 1} / {selectedWords.length}
-            </div>
-            <div className="mb-8 text-center text-2xl text-gray-300">
-              {currentWord.chinese}
-            </div>
+          <div className="relative">
+            {isAnswerTipVisible && <AnswerTip word={currentWord} />}
+            <Input
+              word={currentWord}
+              onCorrect={handleCorrect}
+              onWrong={handleWrong}
+            />
+          </div>
 
-            <div className="relative">
-              {isAnswerTipVisible && <AnswerTip word={currentWord} />}
-              <Input
-                word={currentWord}
-                onCorrect={handleCorrect}
-                onWrong={handleWrong}
-              />
-            </div>
-
-            <div className="mt-12 flex justify-center space-x-4">
-              <button
-                onClick={handleShowAnswer}
-                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
-              >
-                显示答案 (Alt+K)
-              </button>
-              <button
-                onClick={handleNext}
-                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
-              >
-                下一个 (Alt+L)
-              </button>
-              <button
-                onClick={() => setIsPaused(true)}
-                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
-              >
-                暂停 (Alt+P)
-              </button>
-            </div>
+          <div className="mt-12 flex justify-center space-x-4">
+            <button
+              onClick={handleShowAnswer}
+              className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
+            >
+              显示答案 (Alt+K)
+            </button>
+            <button
+              onClick={handleNext}
+              className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
+            >
+              下一个 (Alt+L)
+            </button>
+            <button
+              onClick={() => setIsPaused(true)}
+              className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
+            >
+              暂停 (Alt+P)
+            </button>
           </div>
         </div>
       </div>
@@ -226,6 +223,6 @@ export default function Game({ words: initialWords, onExit, onWordsChange }: Gam
       {isCompleted && (
         <CompletionModal onRestart={handleRestart} onBackToHome={onExit} />
       )}
-    </div>
+    </>
   );
 }

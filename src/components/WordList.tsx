@@ -17,7 +17,7 @@ export default function WordList({ words, currentIndex, onWordClick }: WordListP
       {/* 浮层开关：不占用主内容布局 */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed left-4 top-4 z-40 flex items-center gap-2 rounded-lg border border-blue-500/30 bg-[#0a0a0a]/90 px-3 py-2 text-sm text-blue-300 shadow-lg shadow-blue-500/10 backdrop-blur-sm transition hover:bg-blue-500/20 ${
+        className={`fixed left-4 top-24 z-40 flex items-center gap-2 rounded-lg border border-blue-500/30 bg-[#0a0a0a]/90 px-3 py-2 text-sm text-blue-300 shadow-lg shadow-blue-500/10 backdrop-blur-sm transition hover:bg-blue-500/20 ${
           isOpen ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
         title="打开词库列表"
