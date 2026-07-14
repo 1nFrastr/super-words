@@ -53,7 +53,7 @@ https://github.com/user-attachments/assets/6be9eb10-e39e-40d8-be63-5cb1566b77df
 - **Heroicons** - 美观的SVG图标集
 
 ### AI与音频
-- **OpenAI SDK** - 集成豆包AI API进行词汇生成
+- **Vercel AI SDK + AI Gateway** - 使用 DeepSeek V4 Flash 生成词汇
 - **use-sound** - React音频播放hook
 
 ### 开发工具

@@ -1,7 +1,7 @@
 "use client";
 
 import { sampleWords } from "@/data/words";
-import { generateSuggestedTopics, generateWordList } from "@/services/openai";
+import { generateSuggestedTopics, generateWordList } from "@/services/ai";
 import { Word } from "@/types/word";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
