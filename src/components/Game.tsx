@@ -6,7 +6,6 @@ import useSound from "use-sound";
 
 import AnswerTip from "./AnswerTip";
 import CompletionModal from "./CompletionModal";
-import DictionarySelector from "./DictionarySelector";
 import GamePauseModal from "./GamePauseModal";
 import Input from "./Input";
 import { mockSpeak } from "./SoundPlayer";
@@ -14,32 +13,38 @@ import WordList from "./WordList";
 
 interface GameProps {
   words: Word[];
+  onExit: () => void;
+  onWordsChange?: (words: Word[]) => void;
 }
 
-export default function Game({ words: initialWords }: GameProps) {
+export default function Game({ words: initialWords, onExit, onWordsChange }: GameProps) {
   const [selectedWords, setSelectedWords] = useState<Word[]>(initialWords);
-  const [currentWord, setCurrentWord] = useState<Word | null>(null);
+  const [currentWord, setCurrentWord] = useState<Word | null>(
+    initialWords[0] ?? null,
+  );
   const [wordIndex, setWordIndex] = useState(0);
   const [isAnswerTipVisible, setIsAnswerTipVisible] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
   const [wrongCount, setWrongCount] = useState(0);
   const [playCorrect] = useSound("/sounds/right.mp3");
   const [playWrong] = useSound("/sounds/error.mp3");
 
-  // Initialize first word when game starts
   useEffect(() => {
-    if (isStarted && selectedWords.length > 0) {
-      setCurrentWord(selectedWords[0]);
-    }
-  }, [selectedWords, isStarted]);
+    setSelectedWords(initialWords);
+    setCurrentWord(initialWords[0] ?? null);
+    setWordIndex(0);
+    setIsAnswerTipVisible(false);
+    setIsCompleted(false);
+    setWrongCount(0);
+  }, [initialWords]);
 
-  // 自动播放单词发音
   useEffect(() => {
     if (currentWord?.english) {
-      // 当 wordIndex 为 0 或单词变化时播放
-      if (wordIndex === 0 || currentWord.english !== selectedWords[wordIndex - 1]?.english) {
+      if (
+        wordIndex === 0 ||
+        currentWord.english !== selectedWords[wordIndex - 1]?.english
+      ) {
         setTimeout(() => {
           mockSpeak(currentWord.english);
         }, 100);
@@ -59,20 +64,21 @@ export default function Game({ words: initialWords }: GameProps) {
     }
   }, [wordIndex, selectedWords]);
 
-  // Handle jumping to specific word
-  const handleWordClick = useCallback((index: number) => {
-    if (index >= 0 && index < selectedWords.length) {
-      setCurrentWord(selectedWords[index]);
-      setWordIndex(index);
-      setIsAnswerTipVisible(false);
-      setWrongCount(0);
-    }
-  }, [selectedWords]);
+  const handleWordClick = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < selectedWords.length) {
+        setCurrentWord(selectedWords[index]);
+        setWordIndex(index);
+        setIsAnswerTipVisible(false);
+        setWrongCount(0);
+      }
+    },
+    [selectedWords],
+  );
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase(); // 转换按键为小写
+      const key = e.key.toLowerCase();
       if (key === "p" && e.altKey) {
         e.preventDefault();
         setIsPaused((prev) => !prev);
@@ -104,24 +110,22 @@ export default function Game({ words: initialWords }: GameProps) {
     }, 300);
   };
 
-  // 打乱单词顺序的函数
   const shuffleWords = (words: Word[]): Word[] => {
     const shuffled = [...words];
-    // 先获取上一轮的最后一个单词
     const lastWord = shuffled[wordIndex];
-    
-    // Fisher-Yates 洗牌算法
+
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // 如果打乱后的第一个单词和上一轮的最后一个单词相同
-    if (shuffled[0].english === lastWord.english) {
-      // 找到一个不是第一位也不是最后一位的随机位置
-      const randomPosition = Math.floor(Math.random() * (shuffled.length - 2)) + 1;
-      // 将第一个单词和随机位置的单词交换
-      [shuffled[0], shuffled[randomPosition]] = [shuffled[randomPosition], shuffled[0]];
+    if (shuffled[0]?.english === lastWord?.english && shuffled.length > 2) {
+      const randomPosition =
+        Math.floor(Math.random() * (shuffled.length - 2)) + 1;
+      [shuffled[0], shuffled[randomPosition]] = [
+        shuffled[randomPosition],
+        shuffled[0],
+      ];
     }
 
     return shuffled;
@@ -135,13 +139,13 @@ export default function Game({ words: initialWords }: GameProps) {
     setIsAnswerTipVisible(false);
     setIsCompleted(false);
     setWrongCount(0);
+    onWordsChange?.(shuffledWords);
   };
 
   const handleWrong = () => {
     playWrong();
     setWrongCount((prev) => {
       if (prev >= 2) {
-        // 连续错误三次显示提示
         setIsAnswerTipVisible(true);
         return 0;
       }
@@ -150,67 +154,40 @@ export default function Game({ words: initialWords }: GameProps) {
   };
 
   const handleShowAnswer = () => {
-    // 如果已经错了很多次，直接显示答案
-    if (wrongCount >= 2) {
-      setIsAnswerTipVisible(true);
-    } else {
-      // 否则重置错误计数
-      setWrongCount(0);
-      setIsAnswerTipVisible(true);
-    }
-  };
-
-  const handleDictionarySelect = (words: Word[]) => {
-    // 重置所有状态，确保切换词库时清除之前的状态
-    setWordIndex(0);
-    setCurrentWord(null);
-    setSelectedWords(words);
     setWrongCount(0);
-    setIsAnswerTipVisible(false);
-    setIsCompleted(false);
-
-    // 最后设置 isStarted，触发游戏开始
-    setIsStarted(true);
+    setIsAnswerTipVisible(true);
   };
-
-  if (!isStarted) {
-    return (
-      <div>
-        <DictionarySelector onSelect={handleDictionarySelect} />
-      </div>
-    );
-  }
 
   if (!currentWord) {
-    return <div></div>;
+    return null;
   }
 
   return (
     <div className="relative min-h-screen">
-      {/* 侧边栏词库列表 */}
       <WordList
         words={selectedWords}
         currentIndex={wordIndex}
         onWordClick={handleWordClick}
       />
 
-      {/* 主内容区域 - 添加左边距为侧边栏留出空间 */}
-      <div className="main-content ml-80 transition-all duration-300">
+      <div className="main-content w-full">
         <div className="container mx-auto px-4 py-8">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="text-sm text-gray-500">
-              进度: {wordIndex + 1} / {selectedWords.length}
-            </div>
+          <div className="mb-4 flex items-center justify-end">
             <button
-              onClick={() => setIsStarted(false)}
-              className="rounded-lg bg-gray-200 px-4 py-2 text-sm text-gray-600 hover:bg-gray-300"
+              onClick={onExit}
+              className="rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-300 transition hover:bg-blue-500/20"
             >
               切换词库
             </button>
           </div>
 
           <div className="mx-auto max-w-2xl">
-            <div className="mb-8 text-center text-2xl text-gray-600">{currentWord.chinese}</div>
+            <div className="mb-2 text-center text-sm text-gray-500">
+              进度: {wordIndex + 1} / {selectedWords.length}
+            </div>
+            <div className="mb-8 text-center text-2xl text-gray-300">
+              {currentWord.chinese}
+            </div>
 
             <div className="relative">
               {isAnswerTipVisible && <AnswerTip word={currentWord} />}
@@ -224,19 +201,19 @@ export default function Game({ words: initialWords }: GameProps) {
             <div className="mt-12 flex justify-center space-x-4">
               <button
                 onClick={handleShowAnswer}
-                className="rounded-lg border border-gray-600/10 bg-gray-600/5 px-4 py-2 text-xs text-gray-500 transition-colors hover:bg-gray-600/10 hover:text-gray-600"
+                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
               >
                 显示答案 (Alt+K)
               </button>
               <button
                 onClick={handleNext}
-                className="rounded-lg border border-gray-600/10 bg-gray-600/5 px-4 py-2 text-xs text-gray-500 transition-colors hover:bg-gray-600/10 hover:text-gray-600"
+                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
               >
                 下一个 (Alt+L)
               </button>
               <button
                 onClick={() => setIsPaused(true)}
-                className="rounded-lg border border-gray-600/10 bg-gray-600/5 px-4 py-2 text-xs text-gray-500 transition-colors hover:bg-gray-600/10 hover:text-gray-600"
+                className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-2 text-xs text-gray-400 transition-colors hover:bg-blue-500/10 hover:text-blue-300"
               >
                 暂停 (Alt+P)
               </button>
@@ -247,10 +224,7 @@ export default function Game({ words: initialWords }: GameProps) {
 
       {isPaused && <GamePauseModal onClose={() => setIsPaused(false)} />}
       {isCompleted && (
-        <CompletionModal
-          onRestart={handleRestart}
-          onBackToHome={() => setIsStarted(false)}
-        />
+        <CompletionModal onRestart={handleRestart} onBackToHome={onExit} />
       )}
     </div>
   );

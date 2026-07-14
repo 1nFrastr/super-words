@@ -1,16 +1,28 @@
 "use client";
 
-import Game from "@/components/Game";
-import { sampleWords } from "@/data/words";
+import DictionarySelector from "@/components/DictionarySelector";
+import { savePlaySession } from "@/lib/session";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
+    <main className="flex min-h-screen flex-col items-center px-4 py-16 sm:py-24">
       <div className="w-full max-w-3xl">
-        <h1 className="bg-linear-to-r mb-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-center text-4xl font-bold text-transparent">
+        <h1 className="mb-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-center text-4xl font-bold text-transparent">
           AI超级单词表
         </h1>
-        <Game words={sampleWords} />
+        <DictionarySelector
+          onSelect={(words, meta) => {
+            savePlaySession({
+              words,
+              source: meta.source,
+              topic: meta.topic,
+            });
+            router.push("/play");
+          }}
+        />
       </div>
     </main>
   );

@@ -133,7 +133,7 @@ export default function Input({ word, onCorrect, onWrong }: InputProps) {
                   ? "border-fuchsia-500 text-fuchsia-500"
                   : part.incorrect
                     ? "border-red-500 text-red-500"
-                    : "border-gray-300 text-gray-500"
+                    : "border-gray-600 text-gray-400"
               }`}
             >
               <span className="block min-w-[1ch]">{part.userInput || "\u00A0"}</span>

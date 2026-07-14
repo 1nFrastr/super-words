@@ -29,14 +29,14 @@ export default function GamePauseModal({ onClose }: GamePauseModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
-        <h2 className="mb-8 text-2xl font-bold text-gray-800">🛑游戏暂停</h2>
-        <p className="mb-8 text-base text-gray-600">{message}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-lg border border-blue-500/30 bg-[#111] p-6 shadow-xl shadow-blue-500/10">
+        <h2 className="mb-8 text-2xl font-medium text-blue-400">游戏暂停</h2>
+        <p className="mb-8 text-base text-gray-400">{message}</p>
         <div className="flex w-full justify-end">
           <button
             onClick={onClose}
-            className="rounded-lg bg-blue-500 px-6 py-2 text-white hover:bg-blue-600"
+            className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-2 text-white transition hover:from-blue-600 hover:to-blue-700"
           >
             继续游戏
           </button>
